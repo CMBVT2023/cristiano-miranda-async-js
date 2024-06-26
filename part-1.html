@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
     <title>Asynchronous JavaScript Practice: Part 1</title>
-    
 </head>
 <body>
 
@@ -13,44 +12,62 @@
         <h1>Asynchronous JavaScript Practice: Part 1</h1>
         <p>Based on the <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing">Introducing asynchronous JavaScript</a> tutorial from MDN Web Docs.</p>
 
-        <div id="greeting-example">
+        <div id="examples-container">
+        <div id="greeting-example" class="example">
             <h4>What is your name?</h4>
             <input type="text" placeholder="Enter your name...">
         </div>
 
-        <div id="generate-primes-example">
+        <div id="generate-primes-example" class="example">
             <h4>Result: <span>Not Started</span></h4>
+            <h5></h5>
 
             <label for="generate-primes-example-input">Number of Primes:</label>
             <input id="generate-primes-example-input" value="1000000" placeholder="Enter a number...">
         
             <button>Generate</button>
+            <button>Reload</button>
             <textarea placeholder="Try typing in this..."></textarea>
         </div>
 
-        <div id="http-request-example">
+        <div id="http-request-example" class="example">
             <h4>Request Status: <span>Not Started</span></h4>
             <h5></h5>
+            <h6></h6>
 
             <button>Request</button>
             <button>Reload</button>
         </div>
 
-        <div id="callback-example">
+        <div id="callback-example" class="example">
             <h4>Function Implementation</h4>
             <h5>Result: <span></span></h5>
+            <h6></h6>
 
             <button>Generate</button>
 
             <h4>Callback Implementation</h4>
             <h5>Result: <span></span></h5>
+            <h6></h6>
 
             <button>Generate</button>
 
             <button>Reload</button>
         </div>
 
-        <h1><a href="./index.html">Return</a></h1>
+        <div id="timeout-example" class="example">
+            <h4>Timeout Test</h4>
+            <h5>Result: <span>Not Started</span></h5>
+            <h6></h6>
+
+            <button>Start</button>
+            <button>Reload</button>
+            <textarea placeholder="Try typing in this..."></textarea>
+
+        </div>
+    </div>
+
+        <h1 id="return-link"><a href="./index.html">Return</a></h1>
     </div>
 
 

@@ -2,6 +2,7 @@ const greetingExampleElements = document.getElementById('greeting-example');
 const generatePrimesExampleElements = document.getElementById('generate-primes-example');
 const httpRequestExampleElements = document.getElementById('http-request-example');
 const callBackExampleElements = document.getElementById('callback-example');
+const timeOutExampleElements= document.getElementById('timeout-example');
 
 function greetingExample(name) {
     greetingExampleElements.querySelector('h4').innerHTML = `
@@ -10,6 +11,7 @@ function greetingExample(name) {
 }
 
 function generatePrimesExample(num) {
+    let time = Date.now()
     const maximum = num;
 
     function isPrime(n) {
@@ -32,14 +34,16 @@ function generatePrimesExample(num) {
         }
     }
 
+    generatePrimesExampleElements.querySelector('h5').innerHTML = `${Date.now() - time} milliseconds elapsed`;
     return primes;
 }
 
 function httpRequestExample() {
+    let time = Date.now();
     const xhr = new XMLHttpRequest(); 
 
     xhr.addEventListener('loadend', () => {
-        httpRequestExampleElements.querySelector('h5').innerHTML = `Finished with status: ${xhr.status}`;
+        httpRequestExampleElements.querySelector('h5').innerHTML = `Finished with status: ${xhr.status}, eventListener finished in ${Date.now() - time} milliseconds`;
     })
 
     xhr.open('GET',
@@ -47,10 +51,12 @@ function httpRequestExample() {
     )
     xhr.send()
     httpRequestExampleElements.querySelector('span').innerHTML = `Finished`;
+    httpRequestExampleElements.querySelector('h6').innerHTML = `Whole function finished in ${Date.now() - time} milliseconds`;
 }
 
 function callBackExample(type) {
     if (type === 0) {
+        let time = Date.now();
         function doStep1(val) {
             return val + 1;
         }
@@ -66,7 +72,9 @@ function callBackExample(type) {
         result = doStep2(result);
         result = doStep3(result);
         callBackExampleElements.querySelectorAll('span')[0].innerHTML = result;
+        callBackExampleElements.querySelectorAll('h6')[0].innerHTML = `${Date.now() - time} milliseconds elapsed`;
     } else if (type === 1) {
+        let time = Date.now();
         function doStep1(val, callback) {
             const result = val + 1;
             callback(result);
@@ -90,20 +98,41 @@ function callBackExample(type) {
                 })
             })
         })
+        callBackExampleElements.querySelectorAll('h6')[1].innerHTML = `${Date.now() - time} milliseconds elapsed`;
     }
+}
+
+function timeOutExample() {
+    let time = Date.now();
+
+    setTimeout(() => {
+        timeOutExampleElements.querySelector('span').innerHTML = `Finished, timeout finished after ${Date.now() - time} milliseconds.`
+    }, 2000)
+
+    timeOutExampleElements.querySelector('span').innerHTML = `Triggered`
+
+    timeOutExampleElements.querySelector('h6').innerHTML = `Function finished after ${Date.now() - time} milliseconds.`
 }
 
 function loadEventListeners() {
     greetingExampleElements.querySelector('input').addEventListener('change', (e) => {
         greetingExample(e.target.value);
     })
-
-    generatePrimesExampleElements.querySelector('input').addEventListener('change', () => {
-        generatePrimesExampleElements.querySelector('span').innerHTML = 'Not Started'
-    })
-    generatePrimesExampleElements.querySelector('button').addEventListener('click', () => {
+    
+    let generatePrimesButtons = generatePrimesExampleElements.querySelectorAll('button');
+    generatePrimesButtons[0].addEventListener('click', () => {
         let result = generatePrimesExample(generatePrimesExampleElements.querySelector('input').value)
         generatePrimesExampleElements.querySelector('span').innerHTML = 'Finished';
+    })
+    generatePrimesButtons[1].addEventListener('click', () => {
+        generatePrimesExampleElements.querySelector('span').innerHTML = 'Not Started'
+        generatePrimesExampleElements.querySelector('h5').innerHTML = ''
+        generatePrimesExampleElements.querySelector('textarea').value = ''
+    })
+    generatePrimesExampleElements.querySelector('input').addEventListener('change', () => {
+        generatePrimesExampleElements.querySelector('span').innerHTML = 'Not Started'
+        generatePrimesExampleElements.querySelector('h5').innerHTML = ''
+        generatePrimesExampleElements.querySelector('textarea').value = ''
     })
 
     let httpRequestButtons = httpRequestExampleElements.querySelectorAll('button');
@@ -113,11 +142,13 @@ function loadEventListeners() {
     httpRequestButtons[1].addEventListener('click', () => {
         httpRequestExampleElements.querySelector('span').innerHTML = `Not Started`;
         httpRequestExampleElements.querySelector('h5').innerHTML = ``;
+        httpRequestExampleElements.querySelector('h6').innerHTML = ``;
     })
 
     let callBackButtons = callBackExampleElements.querySelectorAll('button')
     callBackButtons[2].addEventListener('click', () => {
         callBackExampleElements.querySelectorAll('span').forEach((e) => e.innerHTML = ``);
+        callBackExampleElements.querySelectorAll('h6').forEach((e) => e.innerHTML = ``);
     })
     callBackButtons[0].addEventListener('click', () => {
         callBackExample(0);
@@ -125,6 +156,17 @@ function loadEventListeners() {
     callBackButtons[1].addEventListener('click', () => {
         callBackExample(1);
     })
+
+    let timeoutButtons = timeOutExampleElements.querySelectorAll('button');
+    timeoutButtons[0].addEventListener('click', () => {
+        timeOutExample();
+    })
+    timeoutButtons[1].addEventListener('click', () => {
+        timeOutExampleElements.querySelector('span').innerHTML = 'Not Started';
+        timeOutExampleElements.querySelector('h6').innerHTML = '';
+        timeOutExampleElements.querySelector('textarea').value = '';
+    })
 }
+
 
 loadEventListeners()

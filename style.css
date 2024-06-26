@@ -1,0 +1,67 @@
+:root {
+    --main-background-color: #12664F;
+    --secondary-background-color: #307473;
+    --tertiary-background-color: #C6D4FF;
+    --main-text-color: #2DC2BD;
+    --secondary-text-color: #7A82AB
+}
+
+html {
+    height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: var(--main-background-color);
+    color: var(--main-text-color);
+}
+
+#page-container {
+    padding: 1vh;
+    text-align: center;
+}
+
+#examples-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width: 99%;
+}
+
+a {
+    color: var(--secondary-text-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--tertiary-background-color);
+    text-decoration: underline;
+}
+
+.example {
+    border: 3px solid var(--tertiary-background-color);
+    margin: 10px;
+    max-width: 25%;
+    padding: 10px;
+    height: 500px;
+    background-color: var(--secondary-background-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+button {
+    color: var(--secondary-text-color);
+    background-color: var(--tertiary-background-color);
+}
+
+button:hover {
+    color: var(--main-text-color);
+    background-color: var(--main-background-color);
+    cursor: pointer;
+}
+
+#return-link {
+    position: absolute;
+    top: 1%;
+    right: 2%;
+}
