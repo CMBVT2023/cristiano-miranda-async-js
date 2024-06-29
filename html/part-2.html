@@ -12,6 +12,14 @@
         <h1>Asynchronous JavaScript Practice: Part 2</h1>
         <p>Based on the <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises">How to use promises</a> tutorial from MDN Web Docs.</p>
 
+        <ul>
+            <li><strong>Pending:</strong> the promise has been created, and the asynchronous function it's associated with has not succeeded or failed yet.</li>
+            <li><strong>Fulfilled:</strong> the asynchronous function has succeeded. When a promise is fulfilled, its then() handler is called.</li>
+            <li><strong>Rejected:</strong> the asynchronous function has failed. When a promise is rejected, its catch() handler is called.</li>
+            <li>"Succeeded" or "Failed" is based on the API in use. Even if the server responds with a 404 error, the server technically still responded, so the function did succeed.</li>
+            <li>The term settled is used to cover both terms for fulfilled and rejected.</li>
+        </ul>
+
         <div id="examples-container">
             <div id="fetch-request-example" class="example">
                 <h4>Request Status: <span>Not Started</span></h4>
@@ -46,6 +54,30 @@
             <div id="fetch-catch-example" class="example">
                 <h3>Current Link: <strong>Working</strong></h3>
                 <h4>Request Status: <span>Not Started</span></h4>
+                <h6></h6>
+
+                <ol></ol>
+
+                <button>Start</button>
+                <button>Change Link</button>
+                <button>Reload</button>
+            </div>
+
+            <div id="multiple-fetching-example" class="example">
+                <h3>Current Link: <strong>Working</strong></h3>
+                <h4>Fetch Result: <span>Not Started</span></h4>
+                <h6></h6>
+
+                <ol></ol>
+
+                <button>Start</button>
+                <button>Change Link</button>
+                <button>Reload</button>
+            </div>
+
+            <div id="fetching-any-check-example" class="example">
+                <h3>Current Link: <strong>Working</strong></h3>
+                <h4>Fetch Result: <span>Not Started</span></h4>
                 <h6></h6>
 
                 <ol></ol>

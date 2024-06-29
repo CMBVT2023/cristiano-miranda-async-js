@@ -3,6 +3,7 @@ const fetchRequestExampleElements = document.getElementById('fetch-request-examp
 const promiseChainingExampleElements = document.getElementById('promise-chaining-example');
 const failedFetchRequestExampleElements = document.getElementById('failed-fetch-request-example');
 const fetchCatchExampleElements = document.getElementById('fetch-catch-example');
+const multipleFetchingExampleElements = document.getElementById('multiple-fetching-example');
 
 // Fetch Request Example
 function fetchRequestExample() {
@@ -126,7 +127,7 @@ function failedFetchRequestExample(http) {
     failedFetchRequestExampleElements.querySelector('h6').innerHTML = `Function finished executing in ${Date.now() - time} milliseconds`;
 }
 
-// Fetch Catch Example, add the .catch feature to this problem, after the second .then promise method.
+// Fetch Catch Example
 function fetchCatchExample(http) {
     // Saves the time a which the function first starts executing.
     let time = Date.now()
@@ -141,12 +142,6 @@ function fetchCatchExample(http) {
     fetchPromise.then((response) => {
         // Checks if the response from the promise is valid.
         if (!response.ok) {
-            // If not, the span is selected from the div to show the time it took for the failed promise to execute.
-            fetchCatchExampleElements.querySelector('span').innerHTML = `Function failed but finished executing in ${Date.now() - time} milliseconds`;
-
-            // Opens a new alert to display the error.
-            alert(`HTTP Error: ${response.status}`);
-
             // Throws a http error, and note that doing this prevents any line of code from running afterwards, treat these like a return statement.
             throw new Error(`HTTP error: ${response.status}`);
         }
@@ -167,10 +162,53 @@ function fetchCatchExample(http) {
         // Selects the span element from the div container and displays the amount of time it took for the promise to finish executing.
         failedFetchRequestExampleElements.querySelector('span').innerHTML = `Received <br>
             Fetch Request Finished in ${Date.now() - time} milliseconds`;
-    })
+    }).catch((error) => {
+        // If not, the span is selected from the div to show the time it took for the failed promise to execute.
+        fetchCatchExampleElements.querySelector('span').innerHTML = `Function failed but finished executing in ${Date.now() - time} milliseconds`;
+
+        // Opens a new alert to display the error.
+        alert(`HTTP Error: ${error}`);
+
+        // Logs the resulting error to the console.
+        console.error(`Could not get products: ${error}`);
+    });
 
     // Selects the h6 element from the div container and displays the time it took for the function to finish executing.
     fetchCatchExampleElements.querySelector('h6').innerHTML = `Function finished executing in ${Date.now() - time} milliseconds`;
+}
+
+// Multiple Fetching Example
+function multipleFetchingExample(link) {
+    // Saves the time a which the function first starts executing.
+    let time = Date.now()
+
+    // Clears the h6 and ol elements before appending items to them.
+    multipleFetchingExampleElements.querySelector('h6').innerHTML = ``;
+    multipleFetchingExampleElements.querySelector('ol').innerHTML = ``;
+
+    // Initializes multiple promises using the fetch API.
+    const fetchPromiseOne = fetch("https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",);
+    const fetchPromiseTwo = fetch(link,);
+    const fetchPromiseThree = fetch("https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json",);
+
+    // Initializes a promise check that will trigger a callback only if all of the promises succeed.
+    Promise.all([fetchPromiseOne, fetchPromiseTwo, fetchPromiseThree]).then((responses) => { // Takes the result of the promise and reads the body text from it.
+        multipleFetchingExampleElements.querySelector('span').innerHTML = `Finished`;
+        for (const response of responses) {
+            multipleFetchingExampleElements.querySelector('h6').innerHTML += `First promise finished executing in ${Date.now() - time} milliseconds. <br>`
+            multipleFetchingExampleElements.querySelector('ol').innerHTML += `<li>${response.url}: ${response.status}</li>`
+            console.log(`${response.url}: ${response.status}`);
+        }
+    }).catch((error) => { // Triggers if any of the promises fail.
+        // If there is an error the span is selected from the div to show the time it took for the failed promise to execute.
+        multipleFetchingExampleElements.querySelector('span').innerHTML = `Function failed but finished executing in ${Date.now() - time} milliseconds`;
+
+        // Opens a new alert to display the error.
+        alert(`HTTP Error: ${error}`);
+
+        // Logs the resulting error to the console.
+        console.error(`Failed to fetch: ${error}`);
+    })
 }
 
 // Loads all of the default eventListeners for the web page.
@@ -252,6 +290,33 @@ function loadEventListeners() {
         fetchCatchExampleElements.querySelector('span').innerHTML = "Not Started"
         fetchCatchExampleElements.querySelector('h6').innerHTML = "";
         fetchCatchExampleElements.querySelector('ol').innerHTML = "";
+    })
+
+    // Creates a node list for all of the buttons in the Multiple Fetching Example.
+    let multipleFetchingButtons = multipleFetchingExampleElements.querySelectorAll('button');
+    // Initializes a string to store the link for the multipleFetchingExample.
+    let multipleFetchingLink = "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found";
+    // Initializes all of the eventListeners for the Multiple Fetching Example.
+    multipleFetchingButtons[0].addEventListener('click', () => {
+        multipleFetchingExample(multipleFetchingLink);
+    })
+    multipleFetchingButtons[1].addEventListener('click', () => {
+        if (multipleFetchingExampleElements.querySelector('strong').innerHTML === "Working") {
+            // If the link is currently correct, it will be swapped for a broken link.
+            multipleFetchingLink = "bad-scheme://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found";
+            console.log("Current Link Test: " + fetchCatchLink)
+            multipleFetchingExampleElements.querySelector('strong').innerHTML = "Broken"
+        } else {
+            // If the link is currently broken, it will be swapped for the correct link.
+            fetchCatchLink = "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json"
+            console.log("Current Link Test: " + fetchCatchLink)
+            multipleFetchingExampleElements.querySelector('strong').innerHTML = "Working"
+        }
+    })
+    multipleFetchingButtons[2].addEventListener('click', () => {
+        multipleFetchingExampleElements.querySelector('span').innerHTML = `Not Started`;
+        multipleFetchingExampleElements.querySelector('ol').innerHTML = ``;
+        multipleFetchingExampleElements.querySelector('h6').innerHTML = ``;
     })
 }
 
