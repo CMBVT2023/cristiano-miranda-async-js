@@ -1,5 +1,6 @@
 const generatingPrimesExampleElements = document.getElementById('generating-primes-example');
-const localStoragePracticeElements = document.getElementById('local-storage-practice-example');
+const stringManipulationExampleElements = document.getElementById('string-manipulation-example');
+const timerCountDownExampleElements = document.getElementById('timer-count-down-example');
 
 // Generating Primes Example either through a synchronous function or asynchronous function.
 function generatingPrimesExample(type, num, time) {
@@ -58,18 +59,77 @@ function generatingPrimesExample(type, num, time) {
     // since the data to be displayed requires the worker to finish executing their function. 
 }
 
-// Local Storage Practice Example.
-function localStoragePractice(type, obj) {
-    const localStorageWorker = new Worker('../js/local-storage-worker.js');
+// String Manipulation Example.
+function stringManipulationExample(type, name) {
+    // Stores the time the function started executing
+    let time = Date.now()
+    
+    // Initializes a new worker using the 'string-manipulation-worker.js' file.
+    const stringManipulationWorker = new Worker('../js/string-manipulation-worker.js');
 
-    // Focus on learning how to use multiple commands from one worker with this example,
+    // Checks the value of the type parameter passed in.
     if (type == 1) {
-        localStorageWorker.postMessage({command: "add", obj});
+        // If the value equates to 1, trigger the spinal-tap command and passes the name parameter through.
+        stringManipulationWorker.postMessage({command: "spinal-tap", name});
     } else if (type == 2) {
-        localStorageWorker.postMessage({command: "remove"});
+        // If the value equates to 2, trigger the capitalize command and passes the name parameter through.
+        stringManipulationWorker.postMessage({command: "capitalize", name});
     } else if (type == 3) {
-        localStorageWorker.postMessage({command: "remove-all"});
+        // If the value equates to 3, trigger the lower-case command and passes the name parameter through.
+        stringManipulationWorker.postMessage({command: "lower-case", name});
     }
+
+    // Creates a node list containing the various ol list elements.
+    let lists = stringManipulationExampleElements.querySelectorAll('ol');
+
+    // Initializes an eventListener that triggers once the stringManipulationWorker sends a post message back to the main page.
+    stringManipulationWorker.addEventListener('message', (message) => {
+        // Checks the return value to see what command was triggered.
+        if (message.data.return === "spinal-tap") {
+            // If the spinal-tap command gets returned, log the returned string to the console,
+            // append the string to the first element of the node list,
+            // and display the time it took for the worker to finish executing.
+            console.log(message.data.str)
+            lists[0].innerHTML += `<li>${message.data.str}</li>`;
+            stringManipulationExampleElements.querySelector('span').innerHTML = `${message.data.return} <br>
+             Worker finished executing in ${Date.now() - time} milliseconds.`;
+        } else if (message.data.return === "capitalize") {
+            // If the capitalize command gets returned, log the returned string to the console,
+            // append the string to the second element of the node list,
+            // and display the time it took for the worker to finish executing.
+            console.log(message.data.str)
+            lists[1].innerHTML += `<li>${message.data.str}</li>`;
+            stringManipulationExampleElements.querySelector('span').innerHTML = `${message.data.return} <br>
+             Worker finished executing in ${Date.now() - time} milliseconds.`;
+        } else if (message.data.return === "lower-case") {
+            // If the lower-case command gets returned, log the returned string to the console,
+            // append the string to the third element of the node list,
+            // and display the time it took for the worker to finish executing.
+            console.log(message.data.str)
+            lists[2].innerHTML += `<li>${message.data.str}</li>`;
+            stringManipulationExampleElements.querySelector('span').innerHTML = `${message.data.return} <br>
+             Worker finished executing in ${Date.now() - time} milliseconds.`;
+        }
+    })
+
+    // Displays the time it took for the initial function to finish executing.
+    stringManipulationExampleElements.querySelector('h6').innerHTML = `Initial function finished in ${Date.now() - time} milliseconds.`
+
+    // Initially, this example was supposed to be a localStorage based example, but upon implementing most of the code, I realized that without
+    // the worker has no webpage that allows them to store said information. I would need to add the script to the html webpage, which takes away
+    // the point of the worker, so it is not the best idea to use workers for localStorage. Instead when using workers, they should be limited to
+    // what the tutorial recommended, which is information passed into it like variables, arrays, objects, but no DOM elements since the worker has
+    // no access to any DOM elements or any webpage elements in general.
+
+    // This example helped me learn how to have a worker with more than one command and to see if multiple workers could be utilized at
+    // once, even if it is the same worker. In this case, even passing all commands at once works and it seems like a worker can be initialized
+    // multiple times, similar to how an eventListener can be initialized multiple time and trigger the same function/code multiple times at once.
+}
+
+// Timer Count Down Example
+function timerCountDownExample(delay) {
+// Create the worker file and add the timeout Delays within the files and see what happens when postMessage 
+// are sent multiple times.
 }
 
 function loadEventListeners() {
@@ -100,6 +160,57 @@ function loadEventListeners() {
         generatingPrimesExampleElements.querySelector('strong').innerHTML = ``;
         generatingPrimesExampleElements.querySelector('input').value = `1000000`;
         generatingPrimesExampleElements.querySelector('textarea').value = ``;
+    })
+
+    // Creates a node list of the button elements from the stringManipulationExample div.
+    let stringManipulationButtons = stringManipulationExampleElements.querySelectorAll('button');
+    // Initialized the various eventListeners for the stringManipulationExample.
+    stringManipulationButtons[0].addEventListener('click', () => {
+        stringManipulationExample(1, stringManipulationExampleElements.querySelector('input').value);
+    })
+    stringManipulationButtons[1].addEventListener('click', () => {
+        stringManipulationExample(2, stringManipulationExampleElements.querySelector('input').value);
+    })
+    stringManipulationButtons[2].addEventListener('click', () => {
+        stringManipulationExample(3, stringManipulationExampleElements.querySelector('input').value);
+    })
+    stringManipulationButtons[3].addEventListener('click', () => {
+        // Calls all worker commands at once.
+        stringManipulationExample(1, stringManipulationExampleElements.querySelector('input').value);
+        stringManipulationExample(2, stringManipulationExampleElements.querySelector('input').value);
+        stringManipulationExample(3, stringManipulationExampleElements.querySelector('input').value);
+    })
+    stringManipulationButtons[4].addEventListener('click', () => {
+        // Resets all display elements to their default states.
+        stringManipulationExampleElements.querySelectorAll('ol').forEach((item) => item.innerHTML = ``);
+        stringManipulationExampleElements.querySelector('h6').innerHTML = ``;
+        stringManipulationExampleElements.querySelector('span').innerHTML = `None`;
+        stringManipulationExampleElements.querySelector('input').value = ``;
+    })
+
+    let timerCountDownButtons = timerCountDownExampleElements.querySelectorAll('button');
+    timerCountDownButtons[0].addEventListener('click', () => {
+        timerCountDownExampleElements.querySelector('span').innerHTML = `10s Timer Active`
+        timerCountDownExample(10000);
+    })
+    timerCountDownButtons[1].addEventListener('click', () => {
+        timerCountDownExampleElements.querySelector('span').innerHTML = `15s Timer Active`
+        timerCountDownExample(15000);
+    })
+    timerCountDownButtons[2].addEventListener('click', () => {
+        timerCountDownExampleElements.querySelector('span').innerHTML = `20s Timer Active`
+        timerCountDownExample(20000);
+    })
+    timerCountDownButtons[3].addEventListener('click', () => {
+        timerCountDownExampleElements.querySelector('span').innerHTML = `All Timers Active`
+        timerCountDownExample(10000);
+        timerCountDownExample(15000);
+        timerCountDownExample(20000);
+    })
+    timerCountDownButtons[4].addEventListener('click', () => {
+        timerCountDownExampleElements.querySelectorAll('h3').forEach((item) => item.innerHTML = ``);
+        timerCountDownExampleElements.querySelector('h6').innerHTML = ``;
+        timerCountDownExampleElements.querySelector('span').innerHTML = `Not Active`;
     })
 }
 
