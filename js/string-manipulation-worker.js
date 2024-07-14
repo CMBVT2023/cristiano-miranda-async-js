@@ -1,4 +1,6 @@
+// Initializes an eventListener that triggers once a message event is activated from the main page.
 addEventListener('message', (message) => {
+    // Checks the command passed by the message event.
     if (message.data.command === "spinal-tap") {
         let str = spinalTapConversion(message.data.name);
         postMessage({return: "spinal-tap", str});
@@ -11,6 +13,7 @@ addEventListener('message', (message) => {
     }
 })
 
+// Capitalizes the first letter of every word, separated by a space, in the string.
 function capitalizeName(str) {
     // Splits the string into separate words.
     let arr = str.split(' ');
@@ -25,6 +28,7 @@ function capitalizeName(str) {
     return arr.join(' ');
 }
 
+// Converts the passed in string to spinalTap.
 function spinalTapConversion(str) {
     // Uses .replace() to replace any instance where a lowercase character is followed by a uppercase, and it simply inserts a space between the two.
     str = str.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -36,6 +40,7 @@ function spinalTapConversion(str) {
     return str.split(regexPattern).join('-').toLowerCase()
 }
 
+// Converts all characters in the string to lower case.
 function lowerCaseEntireString(str) {
     return str.toLowerCase();
 }

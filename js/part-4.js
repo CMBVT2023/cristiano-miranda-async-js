@@ -128,8 +128,42 @@ function stringManipulationExample(type, name) {
 
 // Timer Count Down Example
 function timerCountDownExample(delay) {
-// Create the worker file and add the timeout Delays within the files and see what happens when postMessage 
-// are sent multiple times.
+    // Initializes a new worker based on the 'timer-countdown-worker' javascript file.
+    const timerCountDownWorker = new Worker('../js/timer-countdown-worker.js');
+
+    // Checks the value of the delay, and sends a message to the worker containing the type of timer and the delay for it.
+    if (delay == 10) {
+        // // When posting a message to a worker any information passed to it needs to be within an object, even if it is a singular variable.
+        timerCountDownWorker.postMessage({timer: "10s", delay});
+    } else if (delay == 15) {
+        timerCountDownWorker.postMessage({timer: "15s", delay});
+    } else if (delay == 20) {
+        timerCountDownWorker.postMessage({timer: "20s", delay});
+    }
+
+    // Creates a node list of all the strong elements from the timerCountDownExample div.
+    let timerDisplays = timerCountDownExampleElements.querySelectorAll('strong');
+
+    // Initializes an eventListener that triggers every time the worker sends a message.
+    timerCountDownWorker.addEventListener('message', (message) => {
+        // Checks the type of timer that is passing the message, and updates the appropriate display based on the type of timer.
+        if (message.data.timer == "10s") {
+            timerDisplays[0].innerHTML = message.data.countdown;
+            message.data.countdown == 0 ? timerCountDownExampleElements.querySelector('span').innerHTML = `10s Timer Finished` : '';
+        } else if (message.data.timer == "15s") {
+            timerDisplays[1].innerHTML = message.data.countdown;
+            message.data.countdown == 0 ? timerCountDownExampleElements.querySelector('span').innerHTML = `15s Timer Finished` : '';
+        } else if (message.data.timer == "20s") {
+            timerDisplays[2].innerHTML = message.data.countdown;
+            message.data.countdown == 0 ? timerCountDownExampleElements.querySelector('span').innerHTML = `20s Timer Finished` : '';
+        }
+    })
+
+    // This is a good way to show that workers can be triggered multiple times and data from them can be received multiple times. However,
+    // it is also a good way to show the troubles that might occur with trying to use workers with repetition since unlike with the main page,
+    // the worker calls are separate and treated as individual calls, meaning that even if say a global variable is changed on the third call while the
+    // first call is still active, the first call will not be updated with the changes. This can be seen in the console after calling the 10s timer,
+    // and then the 15s or 20s timer. This issue results in no easy way for the timers to be stopped once they are started.
 }
 
 function loadEventListeners() {
@@ -188,27 +222,30 @@ function loadEventListeners() {
         stringManipulationExampleElements.querySelector('input').value = ``;
     })
 
+    // Creates a node list of the buttons from the timerCountDownExample div.
     let timerCountDownButtons = timerCountDownExampleElements.querySelectorAll('button');
+    // Initializes the various eventListeners to trigger the different timers, trigger all timers at once, or to reset all timer displays.
     timerCountDownButtons[0].addEventListener('click', () => {
         timerCountDownExampleElements.querySelector('span').innerHTML = `10s Timer Active`
-        timerCountDownExample(10000);
+        timerCountDownExample(10);
     })
     timerCountDownButtons[1].addEventListener('click', () => {
         timerCountDownExampleElements.querySelector('span').innerHTML = `15s Timer Active`
-        timerCountDownExample(15000);
+        timerCountDownExample(15);
     })
     timerCountDownButtons[2].addEventListener('click', () => {
         timerCountDownExampleElements.querySelector('span').innerHTML = `20s Timer Active`
-        timerCountDownExample(20000);
+        timerCountDownExample(20);
     })
     timerCountDownButtons[3].addEventListener('click', () => {
         timerCountDownExampleElements.querySelector('span').innerHTML = `All Timers Active`
-        timerCountDownExample(10000);
-        timerCountDownExample(15000);
-        timerCountDownExample(20000);
+        timerCountDownExample(10);
+        timerCountDownExample(15);
+        timerCountDownExample(20);
     })
     timerCountDownButtons[4].addEventListener('click', () => {
-        timerCountDownExampleElements.querySelectorAll('h3').forEach((item) => item.innerHTML = ``);
+        // Resets all timers displays, but will not reset the timers themselves.
+        timerCountDownExampleElements.querySelectorAll('strong').forEach((item) => item.innerHTML = ``);
         timerCountDownExampleElements.querySelector('h6').innerHTML = ``;
         timerCountDownExampleElements.querySelector('span').innerHTML = `Not Active`;
     })
